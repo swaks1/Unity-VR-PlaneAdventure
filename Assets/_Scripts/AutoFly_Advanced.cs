@@ -29,9 +29,18 @@ public class AutoFly_Advanced : MonoBehaviour {
 
     private GameObject plane;
 
+    //variables use ot change rotation of plane
+    public float checkingRotationInterfal = 0.1f;
+    private float time = 0.0f;
+    Vector3 currentRotation;
+    Vector3 previosRotation;
+    Vector3 difference;
+    Vector3 startringRotation;
+    bool left, right;
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 		// Stationary start
 		isFlying = false;
 
@@ -39,12 +48,20 @@ public class AutoFly_Advanced : MonoBehaviour {
 		headCamera = this.GetComponentInChildren<Camera> ();
         plane = GameObject.FindWithTag("Plane");
 
+        //set the current equal to previos rotation
+        currentRotation = previosRotation = headCamera.transform.localEulerAngles;
+        difference = Vector3.zero;
+        startringRotation = plane.transform.localEulerAngles;
+        left = right = false;
+
     }
 
 	// Update is called once per frame
 	void Update () {
 
         // OVDE SE MENUVA INPUTOT za GVR VIEWR in FGVR INPUT MODULE....
+
+
 
        // viewer.Triggered = Input.GetKeyDown(KeyCode.Mouse0);
         viewer.Triggered = Input.GetKeyDown(KeyCode.D);
@@ -55,7 +72,7 @@ public class AutoFly_Advanced : MonoBehaviour {
         // (Triggered is called when the user presses the button on their VR headset)
         if (viewer.Triggered) {
 			isFlying = !isFlying;
-		}
+        }
 
 		// Move Head if flying
 		if (isFlying) {
@@ -78,8 +95,72 @@ public class AutoFly_Advanced : MonoBehaviour {
 			}
 		}
 
+        //change the rotation of the plane dpeneding of HEAD rotation...
+        //executes every 'checkingRotationInterfal' seconds...
+        time += Time.deltaTime;
+        if (time >= checkingRotationInterfal)
+        {
+            time = 0.0f;
+            changeRotationOfPlane();
+        }
+
         detectPressedKeyOrButton();
 
+    }
+
+    private void changeRotationOfPlane()
+    {
+        
+        currentRotation = headCamera.transform.localEulerAngles;
+        difference = currentRotation - previosRotation;      
+        float differenceY = difference.y;
+        //angley = (angley > 180) ? angley - 360 : angley;  if u want normalized with - sign
+        //Debug.Log("difference :" + differenceY );
+
+    
+        if (differenceY > 3)
+        {
+            if (!right)
+            {
+                right = true;
+                plane.transform.Rotate(0, 0, 10);
+            }
+            if (left)
+            {
+                left = false;
+                plane.transform.Rotate(0, 0, 10);
+            }
+        }
+        if (differenceY < -3)
+        {
+            if (!left)
+            {
+                left = true;
+                plane.transform.Rotate(0, 0, -10);
+            }
+            if (right)
+            {
+                right = false;
+                plane.transform.Rotate(0, 0, -10);
+            }
+
+        }
+
+        if (difference == Vector3.zero)
+        {
+            if (left)
+            {
+                plane.transform.Rotate(0, 0, 10);
+                left = false;
+            }
+            if (right)
+            {
+                plane.transform.Rotate(0, 0, -10);
+                right = false;
+            }
+        }
+        
+        previosRotation = currentRotation;
     }
 
     //Test for Joystick
