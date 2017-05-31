@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
@@ -18,9 +19,9 @@ public class GameController : MonoBehaviour
     public float startWait;
     public float waveWait;
     public Text scoreText;
+    public bool gameOver;
 
     private int score;
-    private bool gameOver;
     private AutoFly_Advanced flyerScript;
     private Coroutine myCoroutine;
 
@@ -45,19 +46,19 @@ public class GameController : MonoBehaviour
     {
         if (gameOver)
         {
+            
             if (Input.GetKeyDown(KeyCode.R))
             {
-                gameOver = false;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                return;
+                // //stop the actual if runing
+                //StopCoroutine(myCoroutine);
 
-                //stop the actual if runing
-               StopCoroutine(myCoroutine);
-
-
-                //start new one.... THIS HAS TO BE TESTED...
-                myCoroutine = StartCoroutine(SpawnWaves()); 
-                flyerScript.speed = 2f;
-                score = 0;
-                updateScore();
+                // //start new one.... THIS HAS TO BE TESTED...
+                // myCoroutine = StartCoroutine(SpawnWaves());
+                // flyerScript.speed  = 6;
+                // score = 0;
+                // updateScore();
             }
         }
     }

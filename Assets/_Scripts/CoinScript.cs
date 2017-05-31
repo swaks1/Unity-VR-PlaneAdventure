@@ -6,6 +6,7 @@ public class CoinScript : MonoBehaviour
 {
 
     private GameController gameController;
+    private AudioSource audioSource;
 
     // Use this for initialization
     void Start()
@@ -20,6 +21,8 @@ public class CoinScript : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -32,9 +35,12 @@ public class CoinScript : MonoBehaviour
     {
         if(other.tag == "Plane")
         {
+            audioSource.Play();
             //add score to controller
             gameController.AddScore(1);
-            Destroy(this.gameObject);
+            gameObject.GetComponentInChildren<Renderer>().enabled = false;
+            Destroy(gameObject, 1);
+            //Destroy(this.gameObject);
         }
     }
 

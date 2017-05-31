@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlaneScript : MonoBehaviour {
 
     public GameObject player;
+    public GameObject explosion;
     private GameController gameController;
 
     // Use this for initialization
@@ -43,6 +44,9 @@ public class PlaneScript : MonoBehaviour {
             AutoFly_Advanced scriptFly = player.GetComponent(typeof(AutoFly_Advanced)) as AutoFly_Advanced;
             scriptFly.isFlying = false;
             gameController.GameOver();
+
+            Instantiate(explosion, transform.position, transform.rotation);
+            gameObject.SetActive(false); 
         }
 
     }
