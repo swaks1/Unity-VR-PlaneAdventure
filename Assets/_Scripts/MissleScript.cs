@@ -36,6 +36,7 @@ public class MissleScript : MonoBehaviour {
     {
         this.target = obj;
         childObject = transform.GetChild(0);
+        speed += GameObject.FindWithTag("Player").GetComponent<AutoFly_Advanced>().speed; 
     }
 
     void OnTriggerEnter(Collider other)

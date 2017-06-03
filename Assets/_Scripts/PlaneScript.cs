@@ -31,9 +31,7 @@ public class PlaneScript : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        AutoFly_Advanced scriptFly = player.GetComponent(typeof(AutoFly_Advanced)) as AutoFly_Advanced;
-        scriptFly.isFlying = false;
-        gameController.GameOver();
+        PlayerDied();
 
     }
 
@@ -41,13 +39,20 @@ public class PlaneScript : MonoBehaviour {
     {
         if (other.tag == "Terrain")
         {
-            AutoFly_Advanced scriptFly = player.GetComponent(typeof(AutoFly_Advanced)) as AutoFly_Advanced;
-            scriptFly.isFlying = false;
-            gameController.GameOver();
-
-            Instantiate(explosion, transform.position, transform.rotation);
-            gameObject.SetActive(false); 
+            PlayerDied();
         }
 
+    }
+
+    public void PlayerDied()
+    {
+        AutoFly_Advanced scriptFly = player.GetComponent(typeof(AutoFly_Advanced)) as AutoFly_Advanced;
+        scriptFly.stopFlying();
+
+        gameController.GameOver();
+        GameObject.FindWithTag("AttackController").GetComponent<AttackControllerScript>().endedGaze();
+
+        Instantiate(explosion, transform.position, transform.rotation);
+        gameObject.SetActive(false);
     }
 }

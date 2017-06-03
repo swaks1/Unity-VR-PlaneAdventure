@@ -15,30 +15,35 @@ public class GameController : MonoBehaviour
     public int Ystart;
     public int Yend;
     public int coinCount;
-    public float spawnWait;
-    public float startWait;
-    public float waveWait;
+    public float coinSpawnWait;
+    public float coinStartWait;
+    public float coinWaveWait;
+
+    public GameObject enemyPlane;
+    public int enemyCount;
+    public float enemySpawnWait;
+    public float enemyStartWait;
+    public float enemyWaveWait;
+
+
     public Text scoreText;
     public bool gameOver;
 
+
     private int score;
     private AutoFly_Advanced flyerScript;
-    private Coroutine myCoroutine;
+    private Coroutine coinCourutine;
+    private Coroutine enemyCourutine;
 
 
     // Use this for initialization
     void Start()
     {
         flyerScript = GameObject.FindWithTag("Player").GetComponent<AutoFly_Advanced>();
-        gameOver = false;
+        //game over will be set to false when calling StartGame method
+        gameOver = true;
         score = 0;
         updateScore();
-
-        // we can repeat with this script
-        // InvokeRepeating("SpawnWaves", 1,2);
-        
-        //start coroutune and save it in variable
-        myCoroutine = StartCoroutine(SpawnWaves());
     }
 
     // Update is called once per frame
@@ -53,19 +58,17 @@ public class GameController : MonoBehaviour
                 return;
                 // //stop the actual if runing
                 //StopCoroutine(myCoroutine);
-
-                // //start new one.... THIS HAS TO BE TESTED...
-                // myCoroutine = StartCoroutine(SpawnWaves());
-                // flyerScript.speed  = 6;
-                // score = 0;
-                // updateScore();
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                startGame();
             }
         }
     }
 
-    IEnumerator SpawnWaves()
+    IEnumerator coinSpawnWaves()
     {
-        yield return new WaitForSeconds(startWait);
+        yield return new WaitForSeconds(coinStartWait);
 
         while (true)
         {
@@ -81,10 +84,10 @@ public class GameController : MonoBehaviour
 
                 Instantiate(coin, spawnPosition, spawnRotation);
 
-                yield return new WaitForSeconds(spawnWait);
+                yield return new WaitForSeconds(coinSpawnWait);
             }
 
-            yield return new WaitForSeconds(waveWait);
+            yield return new WaitForSeconds(coinWaveWait);
 
             if (gameOver)
             {
@@ -96,6 +99,51 @@ public class GameController : MonoBehaviour
 
     }
 
+    IEnumerator enemySpawnWaves()
+    {
+        yield return new WaitForSeconds(enemyStartWait);
+
+        while (true)
+        {
+            for (int i = 0; i < enemyCount; i++)
+            {
+                Vector3 spawnPosition = new Vector3(
+                    Random.Range(Xstart, Xend),
+                    Random.Range(Ystart + 10 , Yend + 10),
+                    Random.Range(Zstart, Zend)
+                );
+
+                Quaternion spawnRotation = Quaternion.identity;
+
+                Instantiate(enemyPlane, spawnPosition, spawnRotation);
+
+                yield return new WaitForSeconds(enemySpawnWait);
+            }
+
+            yield return new WaitForSeconds(enemyWaveWait);
+
+            if (gameOver)
+            {
+                break;
+            }
+        }
+
+
+
+    }
+
+    public void startGame()
+    {
+        gameOver = false;
+        flyerScript.startFlying();
+        // we can repeat with this script
+        // InvokeRepeating("SpawnWaves", 1,2);
+
+        //start coroutune and save it in variable
+        coinCourutine = StartCoroutine(coinSpawnWaves());
+        enemyCourutine = StartCoroutine(enemySpawnWaves());
+    }
+
     void updateScore()
     {
         scoreText.text = "Score: " + score;
@@ -104,7 +152,6 @@ public class GameController : MonoBehaviour
     public void AddScore(int newScoreValue)
     {
         score += newScoreValue;
-        flyerScript.speed += 0.3f;
         updateScore();
     }
 

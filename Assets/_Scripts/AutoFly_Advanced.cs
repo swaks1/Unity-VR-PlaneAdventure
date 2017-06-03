@@ -76,10 +76,10 @@ public class AutoFly_Advanced : MonoBehaviour {
             return;
 
         // OVDE SE MENUVA INPUTOT za GVR VIEWR in FGVR INPUT MODULE....
-       // viewer.Triggered = Input.GetKeyDown(KeyCode.Mouse0);
-        viewer.Triggered = Input.GetKeyDown(KeyCode.D);
+        // viewer.Triggered = Input.GetKeyDown(KeyCode.Mouse0);
         // gvrInputModule.triggerDown = Input.GetKey(KeyCode.D);
         //gvrInputModule.triggering = Input.GetKey(KeyCode.D);
+        viewer.Triggered = Input.GetKeyDown(KeyCode.D);
 
         // Check if user has triggered fly/stop
         // (Triggered is called when the user presses the button on their VR headset)
@@ -127,6 +127,18 @@ public class AutoFly_Advanced : MonoBehaviour {
 
         detectPressedKeyOrButton();
 
+    }
+
+    public void  startFlying()
+    {
+        isFlying = true;
+        plane.GetComponent<AudioSource>().Play();
+
+    }
+    public void stopFlying()
+    {
+        isFlying = false;
+        plane.GetComponent<AudioSource>().Stop();
     }
 
     private void changeRotationOfPlane()

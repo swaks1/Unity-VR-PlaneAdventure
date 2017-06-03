@@ -7,6 +7,7 @@ public class CoinScript : MonoBehaviour
 
     private GameController gameController;
     private AudioSource audioSource;
+    public float speedIncrease;
 
     // Use this for initialization
     void Start()
@@ -36,11 +37,15 @@ public class CoinScript : MonoBehaviour
         if(other.tag == "Plane")
         {
             audioSource.Play();
+
             //add score to controller
-            gameController.AddScore(1);
+            gameController.AddScore(5);
+
+            //hide the coin and increase the speed..than destroy the coin
             gameObject.GetComponentInChildren<Renderer>().enabled = false;
+            gameObject.GetComponent<Collider>().enabled = false;
+            GameObject.FindWithTag("Player").GetComponent<AutoFly_Advanced>().speed += speedIncrease;
             Destroy(gameObject, 1);
-            //Destroy(this.gameObject);
         }
     }
 
