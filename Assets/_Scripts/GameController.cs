@@ -35,20 +35,47 @@ public class GameController : MonoBehaviour
     private Coroutine coinCourutine;
     private Coroutine enemyCourutine;
 
+    private GameObject menuObject;
+    public static bool restart = false;
+
 
     // Use this for initialization
     void Start()
     {
+
         flyerScript = GameObject.FindWithTag("Player").GetComponent<AutoFly_Advanced>();
+        menuObject = GameObject.FindWithTag("MenuObject");
         //game over will be set to false when calling StartGame method
         gameOver = true;
         score = 0;
         updateScore();
+
+        if (restart)
+        {
+            //just start the game without showing the menu
+            this.startGame();
+            //hide the Menu
+            menuObject.SetActive(false);
+        }
+        else
+        {
+            //show the START BUTTON
+            menuObject.transform.GetChild(0).gameObject.SetActive(true);
+            //hide the RESTART BUTTON
+            menuObject.transform.GetChild(1).gameObject.SetActive(false);
+            //show the Menu
+            menuObject.SetActive(true);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitGame();
+        }
+
         if (gameOver)
         {
             
@@ -135,6 +162,8 @@ public class GameController : MonoBehaviour
     public void startGame()
     {
         gameOver = false;
+        menuObject.SetActive(false);
+
         flyerScript.startFlying();
         // we can repeat with this script
         // InvokeRepeating("SpawnWaves", 1,2);
@@ -142,6 +171,40 @@ public class GameController : MonoBehaviour
         //start coroutune and save it in variable
         coinCourutine = StartCoroutine(coinSpawnWaves());
         enemyCourutine = StartCoroutine(enemySpawnWaves());
+    }
+    public void restartGame()
+    {
+        restart = true;
+        menuObject.SetActive(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void GameOver()
+    {
+        gameOver = true;
+
+        //hide the START BUTTON
+        menuObject.transform.GetChild(0).gameObject.SetActive(false);
+        //show the RESTART BUTTON
+        menuObject.transform.GetChild(1).gameObject.SetActive(true);
+        //show the Menu
+        menuObject.SetActive(true);
+
+        scoreText.text = "Game Over...Final Score: " + score ;
+
+    }
+
+    public void ExitGame()
+    {
+       restart = false;
+
+        // DELETE THIS WHEN BUILDING FOR ANDROID
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #endif
+
+
+        Application.Quit();
     }
 
     void updateScore()
@@ -155,9 +218,5 @@ public class GameController : MonoBehaviour
         updateScore();
     }
 
-    public void GameOver()
-    {
-        gameOver = true;
-        scoreText.text = " GAME OVER !! " + score + "coins";
-    }
+
 }

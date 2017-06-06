@@ -13,11 +13,17 @@ public class EnemyPlaneScript : MonoBehaviour {
     private AttackControllerScript attackController;
     private GameController gameController;
     private AudioSource audioExplosion;
+
+    public float explosionTime; // the time needed to be touching so player will die
+    private float timer;
+    private bool touching;
     
 
 
 	// Use this for initialization
 	void Start () {
+        timer = 0;
+        touching = false;
 
         attackController = GameObject.FindWithTag("AttackController").GetComponent<AttackControllerScript>();
         gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
@@ -41,8 +47,16 @@ public class EnemyPlaneScript : MonoBehaviour {
             transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
         }
 
-
-    }
+        if (touching)
+        {
+            timer += Time.deltaTime; //destroy the player after explosion time  of  tocushing
+            if (timer >= explosionTime)
+            {
+                DestroyPlayer();
+            }
+        }
+       
+        }
 
     public void PointerEnter()
     {
@@ -66,6 +80,8 @@ public class EnemyPlaneScript : MonoBehaviour {
     {
         if (other.tag == "Missle")
         {
+            //this has to stay here
+            touching = false;
             //explosion and hide the plane...dont destroy it because music will finish
             GameObject explsionAnimation = Instantiate(explosion, transform.position, transform.rotation);
 
@@ -88,25 +104,38 @@ public class EnemyPlaneScript : MonoBehaviour {
 
         if (other.tag == "Plane")
         {
-            //explosion and hide the plane...dont destroy it because music will finish
-            GameObject explsionAnimation = Instantiate(explosion, transform.position, transform.rotation);
-
-            //hiding of game object is done using renderer.enabled = false.... but htis prefab doesnt have renderer
-            foreach (Transform child in transform)
-            {
-                Destroy(child.gameObject);
-            }
-            GetComponent<EventTrigger>().enabled = false;
-            audioExplosion.Play();
-
-            //destroy the Player's plane
-            GameObject.FindWithTag("Plane").GetComponent<PlaneScript>().PlayerDied();
-
-            //destroy this game object and the explosion particles
-            Destroy(gameObject, 2);
-            Destroy(explsionAnimation, 2);
+            // set touching and in update after some time destroy the player
+            touching = true;       
         }
 
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        touching = false;
+        //timer = 0;
+    }
+
+    private void DestroyPlayer()
+    {
+        touching = false;
+        //explosion and hide the plane...dont destroy it because music will finish
+        GameObject explsionAnimation = Instantiate(explosion, transform.position, transform.rotation);
+
+        //hiding of game object is done using renderer.enabled = false.... but htis prefab doesnt have renderer
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+        GetComponent<EventTrigger>().enabled = false;
+        //audioExplosion.Play();
+
+        //destroy the Player's plane
+        GameObject.FindWithTag("Plane").GetComponent<PlaneScript>().PlayerDied();
+
+        //destroy this game object and the explosion particles
+        Destroy(gameObject, 2);
+        Destroy(explsionAnimation, 2);
     }
 
 }
