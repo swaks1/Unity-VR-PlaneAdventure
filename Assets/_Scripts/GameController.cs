@@ -48,7 +48,6 @@ public class GameController : MonoBehaviour
         //game over will be set to false when calling StartGame method
         gameOver = true;
         score = 0;
-        updateScore();
 
         if (restart)
         {
@@ -65,6 +64,7 @@ public class GameController : MonoBehaviour
             menuObject.transform.GetChild(1).gameObject.SetActive(false);
             //show the Menu
             menuObject.SetActive(true);
+            scoreText.text = "";
         }
     }
 
@@ -161,6 +161,7 @@ public class GameController : MonoBehaviour
 
     public void startGame()
     {
+        updateScore();
         gameOver = false;
         menuObject.SetActive(false);
 
@@ -190,7 +191,7 @@ public class GameController : MonoBehaviour
         //show the Menu
         menuObject.SetActive(true);
 
-        scoreText.text = "Game Over...Final Score: " + score ;
+        scoreText.text = "Final Score: " + score+ " " ;
 
     }
 

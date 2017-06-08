@@ -10,6 +10,7 @@ public class MenuStart : MonoBehaviour
     private GameController gameController;
     private float timer = 0;
     private bool gazedAt;
+    private AudioSource buttonLoad;
 
 
     // Use this for initialization
@@ -17,6 +18,7 @@ public class MenuStart : MonoBehaviour
     {
         gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
         StartProgress = gameObject.transform.GetChild(0).gameObject;
+        buttonLoad = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -48,6 +50,7 @@ public class MenuStart : MonoBehaviour
         gazedAt = true;
         StartProgress.gameObject.SetActive(true);
         timer = 0;
+        buttonLoad.Play();
 
         Debug.Log("started gaze ");
     }
@@ -57,6 +60,7 @@ public class MenuStart : MonoBehaviour
         gazedAt = false;
         StartProgress.gameObject.SetActive(false);
         timer = 0;
+        buttonLoad.Stop();
 
         Debug.Log("ended gaze ");
     }
