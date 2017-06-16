@@ -21,12 +21,14 @@ public class GameController : MonoBehaviour
 
     public GameObject enemyPlane;
     public int enemyCount;
+    public int currentEnemyCount;
     public float enemySpawnWait;
     public float enemyStartWait;
     public float enemyWaveWait;
 
 
     public Text scoreText;
+    public Text enemyText;
     public bool gameOver;
 
 
@@ -42,12 +44,12 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
         flyerScript = GameObject.FindWithTag("Player").GetComponent<AutoFly_Advanced>();
         menuObject = GameObject.FindWithTag("MenuObject");
         //game over will be set to false when calling StartGame method
         gameOver = true;
         score = 0;
+        currentEnemyCount = 0;
 
         if (restart)
         {
@@ -65,6 +67,8 @@ public class GameController : MonoBehaviour
             //show the Menu
             menuObject.SetActive(true);
             scoreText.text = "";
+            enemyText.text = "";
+
         }
     }
 
@@ -132,19 +136,61 @@ public class GameController : MonoBehaviour
 
         while (true)
         {
-            for (int i = 0; i < enemyCount; i++)
-            {
-                Vector3 spawnPosition = new Vector3(
-                    Random.Range(Xstart, Xend),
-                    Random.Range(Ystart + 10 , Yend + 10),
-                    Random.Range(Zstart, Zend)
-                );
+            if(currentEnemyCount == 0)
+            {         
+                for (int i = 0; i < enemyCount; i++)
+                {
 
-                Quaternion spawnRotation = Quaternion.identity;
+                    if (gameOver)
+                    {
+                        break;
+                    }
 
-                Instantiate(enemyPlane, spawnPosition, spawnRotation);
+                    Vector3 spawnPosition;
+                    currentEnemyCount++;
+                    updateEnemyCount();
 
-                yield return new WaitForSeconds(enemySpawnWait);
+                    //alternate between spawning form top/down and from left/right
+                    if (i % 2 == 0)
+                    {
+                        int xPos;
+                        //will the plane sapwn left or right
+
+                        if (Random.value < 0.5f)
+                            xPos = Xstart;
+                        else
+                            xPos = Xend;
+
+                         spawnPosition = new Vector3(
+                            xPos,
+                            Random.Range(Ystart + 10, Yend + 10),
+                            Random.Range(Zstart, Zend)
+                        );
+                    }
+                    else
+                    {
+                        int zPos;
+                        //will the plane sapwn top or bottom
+
+                        if (Random.value < 0.5f)
+                            zPos = Zstart;
+                        else
+                            zPos = Zend;
+
+                         spawnPosition = new Vector3(
+                            Random.Range(Xstart, Xend),
+                            Random.Range(Ystart + 10, Yend + 10),
+                            zPos
+                        );
+                    }
+
+
+                    Quaternion spawnRotation = Quaternion.identity;
+
+                    Instantiate(enemyPlane, spawnPosition, spawnRotation);
+
+                    yield return new WaitForSeconds(enemySpawnWait);
+                }
             }
 
             yield return new WaitForSeconds(enemyWaveWait);
@@ -162,6 +208,7 @@ public class GameController : MonoBehaviour
     public void startGame()
     {
         updateScore();
+        updateEnemyCount();
         gameOver = false;
         menuObject.SetActive(false);
 
@@ -192,6 +239,7 @@ public class GameController : MonoBehaviour
         menuObject.SetActive(true);
 
         scoreText.text = "Final Score: " + score+ " " ;
+        enemyText.text = "";
 
     }
 
@@ -211,12 +259,18 @@ public class GameController : MonoBehaviour
     void updateScore()
     {
         scoreText.text = "Score: " + score;
+        
     }
 
     public void AddScore(int newScoreValue)
     {
         score += newScoreValue;
         updateScore();
+    }
+
+    public void updateEnemyCount()
+    {
+        enemyText.text = "Enemies: " + currentEnemyCount;
     }
 
 

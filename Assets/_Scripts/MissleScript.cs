@@ -28,7 +28,7 @@ public class MissleScript : MonoBehaviour {
         }
         else
         {
-            target = GameObject.FindWithTag("Terrain");
+            target = GameObject.FindWithTag("Void");            
         }
     }
 

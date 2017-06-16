@@ -8,21 +8,27 @@ public class EnemyPlaneScript : MonoBehaviour {
     public GameObject explosion;
     //public float decreasedSpeed;
     public float speed;
+    public GameObject missle;
 
     private GameObject target;
     private AttackControllerScript attackController;
     private GameController gameController;
     private AudioSource audioExplosion;
 
+    //interval to shoot rockets
+    public float shootTime;
+    private float shootTimer;
+
     public float explosionTime; // the time needed to be touching so player will die
     private float timer;
     private bool touching;
-    
+
 
 
 	// Use this for initialization
 	void Start () {
         timer = 0;
+        shootTimer = 0;
         touching = false;
 
         attackController = GameObject.FindWithTag("AttackController").GetComponent<AttackControllerScript>();
@@ -45,6 +51,15 @@ public class EnemyPlaneScript : MonoBehaviour {
             //transform.rotation = Quaternion.LookRotation(transform.position - target.transform.position);
             transform.LookAt(target.transform.position);
             transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+
+            shootTimer += Time.deltaTime;
+            if (shootTimer > shootTime)
+            {
+                shootTimer = 0;
+                GameObject newMissle = Instantiate(missle, transform.position, transform.rotation);
+                var script = newMissle.GetComponent<EnemyMissleScript>();
+                script.setTarget(target);
+            }
         }
 
         if (touching)
@@ -82,6 +97,7 @@ public class EnemyPlaneScript : MonoBehaviour {
         {
             //this has to stay here
             touching = false;
+            shootTimer = -10;
             //explosion and hide the plane...dont destroy it because music will finish
             GameObject explsionAnimation = Instantiate(explosion, transform.position, transform.rotation);
 
@@ -94,11 +110,14 @@ public class EnemyPlaneScript : MonoBehaviour {
             GetComponent<Collider>().enabled = false;
             audioExplosion.Play();
 
+            //add score and decrease enemy count
             gameController.AddScore(10);
+            gameController.currentEnemyCount--;
+            gameController.updateEnemyCount();
 
             //destroy the missle and plane after 2 sec because the sound needs to finish
             Destroy(other.gameObject);
-            Destroy(gameObject,2);
+            Destroy(gameObject,1.2f);
             Destroy(explsionAnimation,2);
         }
 
