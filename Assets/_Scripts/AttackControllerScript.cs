@@ -50,9 +50,7 @@ public class AttackControllerScript : MonoBehaviour {
         target = obj;
         timer = 0;
         slider.gameObject.SetActive(true);
-        slider.value = 0;
-
-        Debug.Log("started gaze at" + obj.transform.position);
+        slider.value = 0;     
     }
     public void endedGaze()
     {
@@ -61,7 +59,5 @@ public class AttackControllerScript : MonoBehaviour {
         timer = 0;
         slider.gameObject.SetActive(false);
         slider.value = 0;
-
-        Debug.Log("ended gaze");
     }
 }

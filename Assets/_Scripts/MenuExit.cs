@@ -51,8 +51,6 @@ public class MenuExit : MonoBehaviour
         StartProgress.gameObject.SetActive(true);
         timer = 0;
         buttonLoad.Play();
-
-        Debug.Log("started gaze ");
     }
 
     public void endedGaze()
@@ -61,7 +59,5 @@ public class MenuExit : MonoBehaviour
         StartProgress.gameObject.SetActive(false);
         timer = 0;
         buttonLoad.Stop();
-
-        Debug.Log("ended gaze ");
     }
 }

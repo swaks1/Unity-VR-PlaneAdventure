@@ -52,7 +52,6 @@ public class MenuStart : MonoBehaviour
         timer = 0;
         buttonLoad.Play();
 
-        Debug.Log("started gaze ");
     }
 
     public void endedGaze()
@@ -61,7 +60,5 @@ public class MenuStart : MonoBehaviour
         StartProgress.gameObject.SetActive(false);
         timer = 0;
         buttonLoad.Stop();
-
-        Debug.Log("ended gaze ");
     }
 }

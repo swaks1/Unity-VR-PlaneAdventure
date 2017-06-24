@@ -26,6 +26,13 @@ public class CloudHelperScript : MonoBehaviour {
             Destroy(other.gameObject);
         }
 
+        if (other.tag == "Plane")
+        {
+            //destroy the Player's plane
+            GameObject.FindWithTag("Plane").GetComponent<PlaneScript>().PlayerDied();
+            Destroy(this.gameObject);
+        }
+
 
     }
 }

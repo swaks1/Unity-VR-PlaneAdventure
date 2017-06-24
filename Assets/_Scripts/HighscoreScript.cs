@@ -1,13 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class MenuRestart : MonoBehaviour
+public class HighscoreScript : MonoBehaviour
 {
 
     public float gazeTime;
-    private GameObject RestartProgress;
+    private GameObject StartProgress;
     private GameController gameController;
     private float timer = 0;
     private bool gazedAt;
@@ -18,7 +17,7 @@ public class MenuRestart : MonoBehaviour
     void Start()
     {
         gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
-        RestartProgress = gameObject.transform.GetChild(0).gameObject;
+        StartProgress = gameObject.transform.GetChild(0).gameObject;
         buttonLoad = GetComponent<AudioSource>();
     }
 
@@ -30,17 +29,17 @@ public class MenuRestart : MonoBehaviour
             timer += Time.deltaTime;
             if (timer <= gazeTime)
             {
-                Vector3 newScale = new Vector3(timer / gazeTime, RestartProgress.transform.localScale.y, RestartProgress.transform.localScale.z);
-                Vector3 newPosition = new Vector3(-0.5f + (timer / gazeTime) / 2, RestartProgress.transform.localPosition.y, RestartProgress.transform.localPosition.z);
+                Vector3 newScale = new Vector3(timer / gazeTime, StartProgress.transform.localScale.y, StartProgress.transform.localScale.z);
+                Vector3 newPosition = new Vector3(-0.5f + (timer / gazeTime) / 2, StartProgress.transform.localPosition.y, StartProgress.transform.localPosition.z);
 
-                RestartProgress.transform.localScale = newScale;
-                RestartProgress.transform.localPosition = newPosition;
+                StartProgress.transform.localScale = newScale;
+                StartProgress.transform.localPosition = newPosition;
             }
             else
             {
-                //RestartTheGame
-                endedGaze();               
-                gameController.restartGame();
+                //StartTheGame
+                endedGaze();
+                gameController.ShowHighScores();
             }
         }
 
@@ -49,16 +48,15 @@ public class MenuRestart : MonoBehaviour
     public void startedGaze()
     {
         gazedAt = true;
-        RestartProgress.gameObject.SetActive(true);
+        StartProgress.gameObject.SetActive(true);
         timer = 0;
         buttonLoad.Play();
-
     }
 
     public void endedGaze()
     {
         gazedAt = false;
-        RestartProgress.gameObject.SetActive(false);
+        StartProgress.gameObject.SetActive(false);
         timer = 0;
         buttonLoad.Stop();
     }
