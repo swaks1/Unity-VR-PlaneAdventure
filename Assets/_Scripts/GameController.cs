@@ -122,6 +122,11 @@ public class GameController : MonoBehaviour
                 Instantiate(coin, spawnPosition, spawnRotation);
 
                 yield return new WaitForSeconds(coinSpawnWait);
+
+                if (gameOver)
+                {
+                    break;
+                }
             }
 
             yield return new WaitForSeconds(coinWaveWait);
@@ -238,6 +243,9 @@ public class GameController : MonoBehaviour
     {
         gameOver = true;
 
+        destroyAllObjects();
+
+
         //hide the START BUTTON
         menuObject.transform.GetChild(0).gameObject.SetActive(false);
         //show the RESTART BUTTON
@@ -321,6 +329,22 @@ public class GameController : MonoBehaviour
             highScores = allScores.Split(',').ToList();
         }
         return highScores;
+    }
+
+
+    private void destroyAllObjects()
+    {
+        var coins = GameObject.FindGameObjectsWithTag("Coin");
+        foreach (var item in coins)
+        {
+            Destroy(item.gameObject);
+        }
+
+        var planes = GameObject.FindGameObjectsWithTag("EnemyPlane");
+        foreach (var item in planes)
+        {
+            Destroy(item.gameObject);
+        }
     }
 
 }

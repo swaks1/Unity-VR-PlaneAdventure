@@ -42,6 +42,11 @@ public class AutoFly_Advanced : MonoBehaviour {
     Vector3 startringRotation;
     bool left, right;
 
+    //get the menu and highscores and rotate them 
+    private GameObject menu;
+    private GameObject highScores;
+    private bool rotatedMenu = false;
+
 
     // Use this for initialization
     void Start () {
@@ -55,8 +60,13 @@ public class AutoFly_Advanced : MonoBehaviour {
         {
             Debug.Log("Cannot find 'GameController' script");
         }
-		// Initialize headCamera to the Camera in the child of Head
-		headCamera = this.GetComponentInChildren<Camera> ();
+
+        menu = GameObject.FindWithTag("MenuObject");
+        highScores = GameObject.FindWithTag("HighScoreBoard");
+
+
+        // Initialize headCamera to the Camera in the child of Head
+        headCamera = this.GetComponentInChildren<Camera> ();
         plane = GameObject.FindWithTag("Plane");
 
         isFlying = false;
@@ -71,6 +81,33 @@ public class AutoFly_Advanced : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+        var yRotation = headCamera.transform.localEulerAngles.y;
+        if (yRotation > 100 && yRotation < 250)
+        {
+            if(!rotatedMenu)
+            {
+                menu.transform.localPosition = new Vector3(menu.transform.localPosition.x, menu.transform.localPosition.y, -5);
+                menu.transform.Rotate(0, 180, 0);
+                highScores.transform.localPosition = new Vector3(highScores.transform.localPosition.x, highScores.transform.localPosition.y, -5);
+                highScores.transform.Rotate(0, 180, 0);
+                rotatedMenu = true;
+            }
+
+        }
+        else
+        {
+            if (rotatedMenu)
+            {
+                menu.transform.localPosition = new Vector3(menu.transform.localPosition.x, menu.transform.localPosition.y, 5);
+                menu.transform.Rotate(0, 180, 0);
+                highScores.transform.localPosition = new Vector3(highScores.transform.localPosition.x, highScores.transform.localPosition.y, 5);
+                highScores.transform.Rotate(0, 180, 0);
+                rotatedMenu = false;
+            }
+        }
+
+
 
         if (gameController.gameOver)
             return;
@@ -126,7 +163,7 @@ public class AutoFly_Advanced : MonoBehaviour {
         }
 
         detectPressedKeyOrButton();
-
+        
     }
 
     public void  startFlying()
