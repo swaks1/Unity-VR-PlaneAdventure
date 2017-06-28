@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CloudHelperScript : MonoBehaviour {
+public class BorderColliderScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -14,23 +14,24 @@ public class CloudHelperScript : MonoBehaviour {
 		
 	}
 
-    
+     void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Plane")
+        {
+            //destroy the Player's plane
+            GameObject.FindWithTag("Plane").GetComponent<PlaneScript>().PlayerDied();
+            Destroy(this.gameObject);
+        }
+    }
+
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Missle")
-        {         
-            Destroy(other.gameObject);
-        }
-        if (other.tag == "EnemyMissle")
-        {
-            Destroy(other.gameObject);
-        }
 
         if (other.tag == "Plane")
         {
             //destroy the Player's plane
             GameObject.FindWithTag("Plane").GetComponent<PlaneScript>().PlayerDied();
-            transform.localScale = new Vector3(250, 250, 250);
+            Destroy(this.gameObject);
         }
 
 

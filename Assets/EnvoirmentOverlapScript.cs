@@ -18,8 +18,19 @@ public class EnvoirmentOverlapScript : MonoBehaviour {
     {
         if (other.tag == "Terrain")
         {
-          other.transform.localPosition = new Vector3(other.transform.localPosition.x, other.transform.localPosition.y - 4f , other.transform.localPosition.z);
-            //Debug.Log(transform.parent.gameObject.tag);
+           //shift the terrains in y axis so menu wont overlap
+            var terrains = GameObject.FindGameObjectsWithTag("Terrain");
+            foreach(var t in terrains)
+            {
+                t.transform.localPosition = new Vector3(t.transform.localPosition.x, t.transform.localPosition.y - 4f, t.transform.localPosition.z);
+            }
+            var borders = GameObject.FindGameObjectsWithTag("TerrainBorder");
+
+            foreach (var t in borders)
+            {
+                t.transform.localPosition = new Vector3(t.transform.localPosition.x, t.transform.localPosition.y - 4f, t.transform.localPosition.z);
+            }
+
         }
 
         if (other.tag == "Coin")
